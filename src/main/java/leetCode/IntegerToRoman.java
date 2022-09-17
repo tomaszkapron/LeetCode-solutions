@@ -11,30 +11,21 @@ public class IntegerToRoman {
 
 
     static public String intToRoman(int num) {
-        int counter = 0;
         StringBuilder roman = new StringBuilder("");
 
         for (RomanDict romanVal : RomanDict.values()) {
-            while (romanVal.getNumber() <= num) {
-                counter++;
+            for (int i = 0; i < romanVal.getMaxPossibleOccuranceQuantity(); i++) {
+                if (romanVal.getNumber() > num) {
+                    break;
+                }
+
                 num -= romanVal.getNumber();
+                roman.append(romanVal.getSignature());
             }
 
-            if (counter == 0) {
-                continue;
-            } else if (counter == 4) {
-                roman.append(romanVal.getLetter());
-                roman.append(romanVal.getHigherLetter());
-            } else {
-                for (int i = 0; i < counter; i++) {
-                    roman.append(romanVal.getLetter());
-                }
-            }
-            counter = 0;
             if (num == 0) {
                 break;
             }
-
         }
 
         return roman.toString();
@@ -59,36 +50,25 @@ public class IntegerToRoman {
         private final int number;
         private final String signature;
 
-        RomanDict(int number, String letter) {
+        private final int maxPossibleOccuranceQuantity;
+
+        RomanDict(int number, String signature) {
             this.number = number;
-            this.signature = letter;
+            this.signature = signature;
+            maxPossibleOccuranceQuantity = signature.length() == 1 ? 3 : 1;
         }
 
         public int getNumber() {
             return number;
         }
 
-        public String getLetter() {
+        public String getSignature() {
             return signature;
         }
 
-        public String getHigherLetter() {
-            switch (this) {
-                case D:
-                    return RomanDict.M.getLetter();
-                case C:
-                    return RomanDict.D.getLetter();
-                case L:
-                    return RomanDict.C.getLetter();
-                case X:
-                    return RomanDict.L.getLetter();
-                case V:
-                    return RomanDict.X.getLetter();
-                case I:
-                    return RomanDict.V.getLetter();
-                default:
-                    return RomanDict.I.getLetter();
-            }
+        public int getMaxPossibleOccuranceQuantity() {
+            return maxPossibleOccuranceQuantity;
         }
     }
+
 }
